@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Personal portfolio website" />
+  <title>Annie — Portfolio</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+
+  <header class="site-header">
+    <a class="brand" href="#home">Chih An, Lin / Annie</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#competitions">Competitions</a>
+      <a href="#publications">Publications</a>
+      <a href="#contact">Contact</a>
+
+    </nav>
+    <button class="menu-button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  </header>
+
+  <main>
+    <section id="home" class="hero section">
+      <div class="hero-copy">
+        <span class="eyebrow">PERSONAL ARCHIVE / VOL. 01</span>
+        <h1>
+          Hi, I'm <span class="marker">Annie</span>.<br />
+          <span id="typewriter" class="typewriter" aria-live="polite"></span>
+        </h1>
+        <p class="hero-intro">
+          
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#projects">Explore my work</a>
+          <a class="button primary" href="#contact">Contact Me</a>
+
+          <!--<a class="button glass-button" href="assets/docs/cv.pdf" target="_blank" rel="noopener">View CV</a>-->
+        </div>
+      </div>
+
+      <div class="archive-shell glass-panel" aria-label="Featured archive carousel">
+        <div class="archive-toolbar">
+          <span class="archive-led"></span>
+          <span> ARCHIVE</span>
+          <span id="archive-counter">01 / 03</span>
+        </div>
+
+        <div class="archive-viewport">
+          <div id="archive-track" class="archive-track"></div>
+        </div>
+
+        <div class="archive-controls">
+          <button id="archive-prev" class="archive-arrow" aria-label="Previous archive item">←</button>
+          <div id="archive-dots" class="archive-dots" aria-label="Archive slides"></div>
+          <button id="archive-next" class="archive-arrow" aria-label="Next archive item">→</button>
+        </div>
+        
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="section-heading">
+        <span class="file-code">FILE 01</span>
+        <h2>About Me</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="badge-stage" id="badge-stage">
+          <article class="id-badge" id="id-badge">
+            <div class="badge-loop" aria-hidden="true"></div>
+            <div class="badge-glow" aria-hidden="true"></div>
+            <div class="badge-top">
+              <span>CREATOR ACCESS</span>
+              <span class="badge-status">● ACTIVE</span>
+            </div>
+
+            <div class="badge-main">
+              <div class="photo-window">
+                <img src="assets/images/profile-placeholder.jpg" alt="Portrait placeholder" />
+              </div>
+
+              <div class="badge-data">
+                <span class="badge-label">NAME</span>
+                <strong>Chih An, Lin (Annie)</strong>
+                <span class="badge-label">ROLE</span>
+                <strong>Student of National Yang Ming Chiao Tung University</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="about-sheet glass-panel">
+          <div class="sheet-meta">
+            <span>PERSONNEL</span><span>UPDATED 2026</span>
+          </div>
+          <p>
+            Hi, I'm Annie, and I'm now a Electrical Engineering student in National Yang Ming Chiao Tung University in Taiwan.
+    
+          </p>
+          <p>
+            I'm now a project student at CSSP Lab, researching about LLM application on medical and health.
+           </p>
+          <div class="skill-tape">
+            <span>Research</span><span>LLM</span><span>Medical</span><span>Data</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-heading">
+        <span class="file-code">FILE 02</span>
+        <h2>Projects</h2>
+      </div>
+      <div id="projects-grid" class="folder-grid"></div>
+    </section>
+
+    <section id="competitions" class="section">
+      <div class="section-heading">
+        <span class="file-code">FILE 03</span>
+        <h2>Competitions</h2>
+        <p></p>
+      </div>
+      <div id="competitions-grid" class="competition-grid"></div>
+    </section>
+
+    <section id="publications" class="section">
+      <div class="section-heading">
+        <span class="file-code">FILE 04</span>
+        <h2>Publications</h2>
+        <p>Conference presentations and journal publications.</p>
+      </div>
+
+      <div class="publication-tabs" role="tablist" aria-label="Publication categories">
+        <button class="pub-tab active" data-filter="all">All</button>
+        <!--<button class="pub-tab" data-filter="journal">Journal</button>-->
+        <!--<button class="pub-tab" data-filter="conference">Conference</button>-->
+      </div>
+      <div id="publications-list" class="publication-list"></div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="contact-card glass-panel">
+        <span class="file-code">LAST PAGE</span>
+        <h2>Contact Me</h2>
+        <div class="contact-links">
+          <a href="mailto:annielin.ee13@nycu.edu.tw">Email</a>
+          <a href="https://github.com/chih-an" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> Chih An, Lin / Annie</span>
+    <span></span>
+  </footer>
+
+  <dialog id="detail-modal" class="detail-modal">
+    <button id="modal-close" class="modal-close" aria-label="Close detail view">×</button>
+    <div id="modal-content"></div>
+  </dialog>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/main.js"></script>
+</body>
+</html>
