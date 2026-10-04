@@ -274,15 +274,36 @@ document.querySelectorAll(".nav a").forEach(link => {
 });
 
 /* Gallery */
+/* Gallery carousel：桌機 3 張 / 平板 2 張 / 手機 1 張，自動輪播 */
+const GALLERY_INTERVAL = 4500;
+let galleryIndex = 0;
+let galleryPerView = 1;
+let galleryTimer = null;
+let galleryPaused = false;
+let galleryTouchX = null;
+const galleryMQ = {
+  desktop: window.matchMedia("(min-width: 1024px)"),
+  tablet: window.matchMedia("(min-width: 640px)")
+};
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function galleryGetPerView() {
+  return galleryMQ.desktop.matches ? 3 : galleryMQ.tablet.matches ? 2 : 1;
+}
+function galleryMaxIndex() {
+  return Math.max(0, (data.gallery || []).length - galleryPerView);
+}
+
 function renderGallery() {
-  const grid = document.querySelector("#gallery-grid");
+  const root = document.querySelector("#gallery-carousel");
   const items = data.gallery || [];
-  grid.innerHTML = items.map((item, i) => {
-    const isVideo = item.type === "youtube";
-    const media = isVideo
+  if (!items.length) { root.innerHTML = ""; return; }
+
+  const slides = items.map((item, i) => {
+    const media = item.type === "youtube"
       ? `<div class="gallery-media">
-           <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.id)}"
-             title="${escapeHTML(item.title)}" loading="lazy"
+           <iframe data-src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.id)}"
+             title="${escapeHTML(item.title)}"
              allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen"
              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
            <span class="gallery-badge">VIDEO</span>
@@ -292,7 +313,7 @@ function renderGallery() {
            <img src="${escapeHTML(item.src)}" alt="${escapeHTML(item.title)}" loading="lazy">
          </div>`;
     return `
-      <figure class="gallery-item glass-panel">
+      <figure class="gallery-slide" aria-roledescription="slide" aria-label="${i + 1} of ${items.length}">
         ${media}
         <figcaption>
           ${item.date ? `<span class="gallery-date">${escapeHTML(item.date)}</span>` : ""}
@@ -301,6 +322,106 @@ function renderGallery() {
         </figcaption>
       </figure>`;
   }).join("");
+
+  root.classList.add("glass-panel");
+  root.setAttribute("aria-roledescription", "carousel");
+  root.innerHTML = `
+    <div class="gallery-viewport" id="gallery-viewport">
+      <div class="gallery-track" id="gallery-track">${slides}</div>
+    </div>
+    <div class="gallery-controls" id="gallery-controls">
+      <button class="gallery-arrow" id="gallery-prev" aria-label="Previous">←</button>
+      <div class="gallery-dots" id="gallery-dots"></div>
+      <button class="gallery-arrow" id="gallery-next" aria-label="Next">→</button>
+    </div>`;
+
+  document.querySelector("#gallery-prev").addEventListener("click", () => galleryGo(galleryIndex - 1, true));
+  document.querySelector("#gallery-next").addEventListener("click", () => galleryGo(galleryIndex + 1, true));
+  document.querySelector("#gallery-dots").addEventListener("click", e => {
+    const dot = e.target.closest("[data-gallery-dot]");
+    if (dot) galleryGo(Number(dot.dataset.galleryDot), true);
+  });
+
+  const viewport = document.querySelector("#gallery-viewport");
+  viewport.addEventListener("touchstart", e => { galleryTouchX = e.touches[0].clientX; }, { passive: true });
+  viewport.addEventListener("touchend", e => {
+    if (galleryTouchX === null) return;
+    const dx = e.changedTouches[0].clientX - galleryTouchX;
+    galleryTouchX = null;
+    if (Math.abs(dx) > 50) galleryGo(galleryIndex + (dx < 0 ? 1 : -1), true);
+  });
+  root.setAttribute("tabindex", "0");
+  root.addEventListener("keydown", e => {
+    if (e.target !== root) return;
+    if (e.key === "ArrowLeft") galleryGo(galleryIndex - 1, true);
+    if (e.key === "ArrowRight") galleryGo(galleryIndex + 1, true);
+  });
+
+  // 滑鼠移入 / 鍵盤聚焦時暫停，避免正在看的內容被切走
+  root.addEventListener("mouseenter", () => { galleryPaused = true; });
+  root.addEventListener("mouseleave", () => { galleryPaused = false; });
+  root.addEventListener("focusin", () => { galleryPaused = true; });
+  root.addEventListener("focusout", () => { galleryPaused = false; });
+  // 點進 YouTube iframe 時（觸控裝置也適用）暫停，直到焦點離開
+  window.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (document.activeElement?.closest?.("#gallery-carousel")) galleryPaused = true;
+    }, 0);
+  });
+  window.addEventListener("focus", () => { galleryPaused = false; });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) galleryRestartTimer(); });
+
+  Object.values(galleryMQ).forEach(mq => mq.addEventListener("change", galleryLayout));
+  galleryIndex = 0;
+  galleryLayout();
+}
+
+function galleryLayout() {
+  const root = document.querySelector("#gallery-carousel");
+  const total = (data.gallery || []).length;
+  galleryPerView = galleryGetPerView();
+  root.style.setProperty("--per-view", galleryPerView);
+  galleryIndex = Math.min(galleryIndex, galleryMaxIndex());
+
+  const pages = galleryMaxIndex() + 1;
+  document.querySelector("#gallery-dots").innerHTML = Array.from({ length: pages }, (_, i) =>
+    `<button class="gallery-dot" data-gallery-dot="${i}" aria-label="Go to position ${i + 1}"></button>`).join("");
+  document.querySelector("#gallery-controls").style.display = total > galleryPerView ? "" : "none";
+  document.querySelector("#gallery-track").classList.toggle("is-static", total <= galleryPerView);
+  updateGallery();
+  galleryRestartTimer();
+}
+
+function galleryGo(index, manual = false) {
+  const max = galleryMaxIndex();
+  if (max === 0) return;
+  galleryIndex = index > max ? 0 : index < 0 ? max : index;
+  updateGallery();
+  if (manual) galleryRestartTimer();
+}
+
+function galleryRestartTimer() {
+  clearInterval(galleryTimer);
+  galleryTimer = null;
+  if (reducedMotion.matches || galleryMaxIndex() === 0) return;
+  galleryTimer = setInterval(() => {
+    if (!galleryPaused && !document.hidden) galleryGo(galleryIndex + 1);
+  }, GALLERY_INTERVAL);
+}
+
+function updateGallery() {
+  document.querySelector("#gallery-track").style.transform =
+    `translateX(-${(galleryIndex * 100) / galleryPerView}%)`;
+  document.querySelectorAll(".gallery-dot").forEach((d, i) => d.classList.toggle("active", i === galleryIndex));
+  // 影片不自動播放：只有在畫面內的影片才載入 iframe（仍需手動按播放）；移出畫面即清除 src 停止播放
+  document.querySelectorAll(".gallery-slide").forEach((slide, i) => {
+    const visible = i >= galleryIndex && i < galleryIndex + galleryPerView;
+    slide.setAttribute("aria-hidden", String(!visible));
+    const frame = slide.querySelector("iframe");
+    if (!frame) return;
+    if (visible) { if (!frame.getAttribute("src")) frame.src = frame.dataset.src; }
+    else frame.removeAttribute("src");
+  });
 }
 
 function openGalleryImage(index) {
