@@ -1,4 +1,5 @@
 :root{
+  --header-h:66px;
   --bg:#F6FFFA;
   --bg-2:#E6E6DB;
   --ink:#4E3C43;
@@ -22,11 +23,10 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:clip}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{
-  margin:0;              /* 修正 header 左右留白 */
-  overflow-x:clip;       /* 不建立 scroll container，sticky 才不會失效 */
-  width:100%;
+  margin:0;
+  padding-top:var(--header-h);  /* 為 fixed header 留位置 */
   background:
     radial-gradient(
       80% 65% at 8% 4%,
@@ -79,7 +79,8 @@ code{font-family:var(--mono);font-size:.88em}
 }
 
 .site-header{
-  position:sticky;top:0;z-index:40;
+  position:fixed;top:0;left:0;right:0;width:100%;z-index:40;
+  min-height:var(--header-h);
   display:flex;align-items:center;justify-content:space-between;
   padding:17px 5vw;
   border-bottom:1px solid rgba(255,255,255,.9);
@@ -214,7 +215,7 @@ code{font-family:var(--mono);font-size:.88em}
   background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.65);
 }
 .badge-glow{
-  position:absolute;width:180px;height:180px;border-radius:50%;right:-70px;top:-70px;
+  position:absolute;width:180px;height:180px;border-radius:50%;right:-12px;top:-12px;
   background:radial-gradient(circle,var(--pink-soft),transparent 68%);filter:blur(3px);opacity:.72;
 }
 .badge-top{display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:.7rem;font-weight:700}
