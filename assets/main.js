@@ -36,7 +36,7 @@ function openDetail(type, index) {
     : (item.tags || [item.result, item.year]).filter(Boolean);
 
   modalContent.innerHTML = `
-    <div class="modal-inner">
+    <div class="modal-inner modal-${type}">
       <span class="modal-kicker">${escapeHTML(kicker)}</span>
       <h2>${escapeHTML(item.title)}</h2>
       ${item.image ? `<img class="modal-image" src="${escapeHTML(item.image)}" alt="">` : ""}
@@ -294,6 +294,14 @@ function galleryMaxIndex() {
   return Math.max(0, (data.gallery || []).length - galleryPerView);
 }
 
+/* 接受影片 ID、網址（watch / youtu.be / embed / shorts），或整段 <iframe> 嵌入碼 */
+function youtubeId(input = "") {
+  const s = String(input).trim();
+  const m = s.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|live\/|watch\?(?:.*&)?v=))([\w-]{11})/);
+  if (m) return m[1];
+  return /^[\w-]{11}$/.test(s) ? s : s;
+}
+
 function renderGallery() {
   const root = document.querySelector("#gallery-carousel");
   const items = data.gallery || [];
@@ -302,7 +310,7 @@ function renderGallery() {
   const slides = items.map((item, i) => {
     const media = item.type === "youtube"
       ? `<div class="gallery-media">
-           <iframe data-src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.id)}"
+           <iframe data-src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId(item.id || item.url))}"
              title="${escapeHTML(item.title)}"
              allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen"
              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

@@ -10,7 +10,7 @@ window.PORTFOLIO_DATA = {
     {
       title: "Competition Highlight",
       subtitle: "AWARD",
-      image: "assets/images/archive-02.png",
+      image: "assets/images/YTIC_4.jpg",
       targetType: "competition",
       targetIndex: 0
     },
@@ -46,13 +46,27 @@ window.PORTFOLIO_DATA = {
 
   competitions: [
     {
+      year: "2026",
+      title: "YTIC",
+      result: "First Runner-Up",
+      description: "FEIAP Youth Talent Innovation Competition 2026",
+      detail: "CareSense AI is a contactless, smartphone-based chronic disease monitoring platform designed for underserved populations. Requiring no internet or extra hardware, it integrates three core technologies:",     
+      image: "assets/images/YTIC_1.png",
+      highlights: [
+        "rPPG Sensing: Extracts vital signs (heart rate, SpO₂, respiratory rate, etc.) directly via the smartphone camera.",
+        "Machine Learning: Establishes personalized physiological baselines for accurate, individualized anomaly detection.",
+        "Edge AI & LLMs: Delivers offline, multilingual, and easy-to-understand health guidance for adaptive triage.",
+        "Team role: Team Captain", "Result / award: First Runner-Up"],
+
+    },
+    {
       year: "2025",
       title: "IGEM",
-      result: "Gold Medel",
+      result: "Gold Medal",
       description: "We created GenOMe, new way for gene editing.",
       detail: "NYCU-Formos is National Yang Ming Chiao Tung University's team at iGEM 2025 — the International Genetically Engineered Machine competition, where student teams worldwide design and build engineered biological systems using standardized DNA parts called BioBricks. Their project, GenOMe, is a plug-and-play platform that integrates BioBricks directly into the bacterial genome in about two days with ~80% success, avoiding the instability and size limits of plasmid-based circuits. Through a modular, cassette-based design, GenOMe enables stepwise, cyclic DNA integration — letting teams build stable, inheritable, extensible genomes beyond the plasmid era.",
-      image: "assets/images/igem_1.jpg",
-      highlights: ["Team role: Vice Captain", "Result / award: Gole Medal; Best Foundational Advance Nomination; Best Part Collection Nomination"],
+      image: "assets/images/igem_3.png",
+      highlights: ["Team role: Vice Captain", "Result / award: Gold Medal; Best Foundational Advance Nomination; Best Part Collection Nomination"],
       links: [        
         { label: "Team Wiki", url: "https://2025.igem.wiki/nycu-formosa/" }
       ]
@@ -75,9 +89,23 @@ window.PORTFOLIO_DATA = {
     }
   ],
 
-  /* Gallery：type 可為 "image" 或 "youtube"
-     youtube 只需填影片 ID（網址 watch?v= 後面那串） */
+
   gallery: [
+    {
+      type: "image",
+      src: "assets/images/YTIC_2.jpg",
+      title: "YTIC 2026",
+      description: "FEIAP Youth Talent Innovation Competition 2026",
+      date: "2026"
+    },
+    
+    {
+      type: "youtube",
+      id: "YwGulHqMzp8",  
+      title: "iGEM Interview",
+      description: "iGEM interview video at NYCU.",
+      date: "2026"
+    },
     {
       type: "image",
       src: "assets/images/igem_1.jpg",
@@ -87,19 +115,11 @@ window.PORTFOLIO_DATA = {
     },
     {
       type: "image",
-      src: "assets/images/igem_2.png",
-      title: "Gold Medal",
-      description: "Replace this with your own caption.",
-      date: "2025"
-    }
-    /* YouTube 範例（取消註解並換成你的影片 ID）：
-    ,{
-      type: "youtube",
-      id: "YOUR_VIDEO_ID",
-      title: "Project demo",
-      description: "A short walkthrough of the project.",
-      date: "2026"
-    }
-    */
+      src: "assets/images/iiai_1.jpg",
+      title: "IIAI 2024",
+      description: "16th International Congress on Advanced Applied Informatics",
+      date: "2024"
+    },
+
   ]
 };
