@@ -273,10 +273,76 @@ document.querySelectorAll(".nav a").forEach(link => {
   link.addEventListener("click", () => nav.classList.remove("open"));
 });
 
+/* Gallery */
+function renderGallery() {
+  const grid = document.querySelector("#gallery-grid");
+  const items = data.gallery || [];
+  grid.innerHTML = items.map((item, i) => {
+    const isVideo = item.type === "youtube";
+    const media = isVideo
+      ? `<div class="gallery-media">
+           <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(item.id)}"
+             title="${escapeHTML(item.title)}" loading="lazy"
+             allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen"
+             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+           <span class="gallery-badge">VIDEO</span>
+         </div>`
+      : `<div class="gallery-media is-image" role="button" tabindex="0"
+             data-gallery-open="${i}" aria-label="View larger: ${escapeHTML(item.title)}">
+           <img src="${escapeHTML(item.src)}" alt="${escapeHTML(item.title)}" loading="lazy">
+         </div>`;
+    return `
+      <figure class="gallery-item glass-panel">
+        ${media}
+        <figcaption>
+          ${item.date ? `<span class="gallery-date">${escapeHTML(item.date)}</span>` : ""}
+          <h3>${escapeHTML(item.title)}</h3>
+          ${item.description ? `<p>${escapeHTML(item.description)}</p>` : ""}
+        </figcaption>
+      </figure>`;
+  }).join("");
+}
+
+function openGalleryImage(index) {
+  const item = (data.gallery || [])[index];
+  if (!item) return;
+  modalContent.innerHTML = `
+    <div class="modal-inner">
+      <span class="modal-kicker">GALLERY${item.date ? " / " + escapeHTML(item.date) : ""}</span>
+      <h2>${escapeHTML(item.title)}</h2>
+      <img class="gallery-lightbox-img" src="${escapeHTML(item.src)}" alt="${escapeHTML(item.title)}">
+      <p class="modal-description">${escapeHTML(item.description || "")}</p>
+    </div>`;
+  if (typeof modal.showModal === "function") modal.showModal();
+  else modal.setAttribute("open", "");
+}
+
+document.addEventListener("click", event => {
+  const el = event.target.closest("[data-gallery-open]");
+  if (el) openGalleryImage(Number(el.dataset.galleryOpen));
+});
+document.addEventListener("keydown", event => {
+  const el = event.target.closest?.("[data-gallery-open]");
+  if (el && (event.key === "Enter" || event.key === " ")) {
+    event.preventDefault();
+    openGalleryImage(Number(el.dataset.galleryOpen));
+  }
+});
+
+/* Back to top */
+const backToTop = document.querySelector("#back-to-top");
+function toggleBackToTop() {
+  backToTop.classList.toggle("show", window.scrollY > 500);
+}
+window.addEventListener("scroll", toggleBackToTop, { passive: true });
+backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+toggleBackToTop();
+
 document.querySelector("#year").textContent = new Date().getFullYear();
 
 renderProjects();
 renderCompetitions();
 renderPublications();
 renderArchive();
+renderGallery();
 runTypewriter();

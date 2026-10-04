@@ -73,5 +73,33 @@ window.PORTFOLIO_DATA = {
         { label: "DOI", url: "https://doi.org/10.52731/lir.v005.470" }
       ]
     }
+  ],
+
+  /* Gallery：type 可為 "image" 或 "youtube"
+     youtube 只需填影片 ID（網址 watch?v= 後面那串） */
+  gallery: [
+    {
+      type: "image",
+      src: "assets/images/igem_1.jpg",
+      title: "iGEM 2025 Grand Jamboree",
+      description: "Team photo at the Grand Jamboree.",
+      date: "2025"
+    },
+    {
+      type: "image",
+      src: "assets/images/igem_2.png",
+      title: "Gold Medal",
+      description: "Replace this with your own caption.",
+      date: "2025"
+    }
+    /* YouTube 範例（取消註解並換成你的影片 ID）：
+    ,{
+      type: "youtube",
+      id: "YOUR_VIDEO_ID",
+      title: "Project demo",
+      description: "A short walkthrough of the project.",
+      date: "2026"
+    }
+    */
   ]
 };

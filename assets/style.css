@@ -22,9 +22,10 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:hidden}
+html{scroll-behavior:smooth;overflow-x:clip}
 body{
-  overflow-x:hidden;
+  margin:0;              /* 修正 header 左右留白 */
+  overflow-x:clip;       /* 不建立 scroll container，sticky 才不會失效 */
   width:100%;
   background:
     radial-gradient(
@@ -94,7 +95,7 @@ code{font-family:var(--mono);font-size:.88em}
   text-decoration:none;text-transform:uppercase;font-size:.78rem;
   letter-spacing:.13em;font-weight:700;color:#655756;
 }
-.nav a:hover{color:var(--blue-deep)}
+.nav a:hover{color:var(--rose-deep)}
 .menu-button{display:none;background:none;border:0;font-size:1.35rem}
 
 .section{
@@ -815,3 +816,45 @@ footer{
   .real-typewriter{position:relative;top:auto}
   .currently-items{grid-template-columns:1fr}
 }
+
+
+/* ===== Back to top ===== */
+.back-to-top{
+  position:fixed;right:max(20px,3vw);bottom:max(20px,3vw);z-index:50;
+  width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.9);
+  background:rgba(255,255,255,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:var(--shadow);font-size:1.25rem;color:var(--ink);cursor:pointer;
+  opacity:0;visibility:hidden;transform:translateY(12px);
+  transition:opacity .25s ease,transform .25s ease,visibility .25s;
+}
+.back-to-top.show{opacity:1;visibility:visible;transform:none}
+.back-to-top:hover{background:#fff;transform:translateY(-3px)}
+.back-to-top:focus-visible{outline:3px solid rgba(218,125,145,.45);outline-offset:2px}
+
+/* ===== Gallery ===== */
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;
+}
+.gallery-item{
+  margin:0;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;
+}
+.gallery-media{
+  position:relative;aspect-ratio:16/10;background:#e9eef2;overflow:hidden;
+}
+.gallery-media img,.gallery-media iframe{
+  width:100%;height:100%;border:0;display:block;object-fit:cover;
+}
+.gallery-media.is-image{cursor:zoom-in}
+.gallery-media.is-image img{transition:transform .4s ease}
+.gallery-media.is-image:hover img{transform:scale(1.04)}
+.gallery-badge{
+  position:absolute;left:12px;top:12px;padding:4px 9px;border-radius:999px;
+  background:rgba(255,255,255,.85);font-family:var(--mono);font-size:.64rem;font-weight:700;
+  letter-spacing:.08em;pointer-events:none;
+}
+.gallery-item figcaption{padding:18px 20px 22px}
+.gallery-item h3{margin:0 0 6px;font-family:var(--serif);font-weight:400;font-size:1.25rem}
+.gallery-item p{margin:0;color:var(--ink-soft);font-size:.95rem;line-height:1.55}
+.gallery-date{display:block;margin-bottom:6px;font-family:var(--mono);font-size:.68rem;color:#7A6D6A;letter-spacing:.08em}
+.gallery-lightbox-img{width:100%;max-height:70vh;object-fit:contain;border-radius:14px;margin-top:24px;background:#0001}
+@media (max-width:640px){.gallery-grid{grid-template-columns:1fr}}
